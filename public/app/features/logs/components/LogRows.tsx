@@ -44,6 +44,8 @@ export interface Props extends Themeable2 {
   onClickHideField?: (key: string) => void;
   onLogRowHover?: (row?: LogRowModel) => void;
   onOpenContext?: (row: LogRowModel, onClose: () => void) => void;
+  isFilterLabelActive?: (key: string, value: string) => boolean;
+  isFilterOutLabelActive?: (key: string, value: string) => boolean;
 }
 
 interface State {
@@ -168,6 +170,8 @@ class UnThemedLogRows extends PureComponent<Props, State> {
                 onLogRowHover={onLogRowHover}
                 app={app}
                 styles={styles}
+                isFilterLabelActive={this.props.isFilterLabelActive}
+                isFilterOutLabelActive={this.props.isFilterOutLabelActive}
               />
             ))}
           {hasData &&
@@ -197,6 +201,8 @@ class UnThemedLogRows extends PureComponent<Props, State> {
                 onLogRowHover={onLogRowHover}
                 app={app}
                 styles={styles}
+                isFilterLabelActive={this.props.isFilterLabelActive}
+                isFilterOutLabelActive={this.props.isFilterOutLabelActive}
               />
             ))}
           {hasData && !renderAll && (

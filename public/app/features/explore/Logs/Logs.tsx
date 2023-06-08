@@ -85,6 +85,8 @@ interface Props extends Themeable2 {
   addResultsToCache: () => void;
   clearCache: () => void;
   eventBus: EventBus;
+  isFilterLabelActive: (key: string, value: string) => boolean;
+  isFilterOutLabelActive: (key: string, value: string) => boolean;
 }
 
 interface State {
@@ -555,6 +557,8 @@ class UnthemedLogs extends PureComponent<Props, State> {
                 app={CoreApp.Explore}
                 onLogRowHover={this.onLogRowHover}
                 onOpenContext={this.onOpenContext}
+                isFilterLabelActive={this.props.isFilterLabelActive}
+                isFilterOutLabelActive={this.props.isFilterOutLabelActive}
               />
               {!loading && !hasData && !scanning && (
                 <div className={styles.noData}>
