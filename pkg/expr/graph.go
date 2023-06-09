@@ -11,6 +11,7 @@ import (
 	"gonum.org/v1/gonum/graph/topo"
 
 	"github.com/grafana/grafana/pkg/expr/mathexp"
+	"github.com/grafana/grafana/pkg/expr/ml"
 )
 
 // NodeType is the type of a DPNode. Currently either a expression command or datasource query.
@@ -21,6 +22,8 @@ const (
 	TypeCMDNode NodeType = iota
 	// TypeDatasourceNode is a NodeType for datasource queries.
 	TypeDatasourceNode
+	// TypeMlNode is a NodeType for Machine Learning queries.
+	TypeMlNode
 )
 
 func (nt NodeType) String() string {
@@ -29,6 +32,8 @@ func (nt NodeType) String() string {
 		return "Expression"
 	case TypeDatasourceNode:
 		return "Datasource"
+	case TypeMlNode:
+		return "Machine Learning"
 	default:
 		return "Unknown"
 	}
@@ -169,6 +174,11 @@ func (s *Service) buildGraph(req *Request) (*simple.DirectedGraph, error) {
 
 		if IsDataSource(rn.DataSource.UID) {
 			node, err = buildCMDNode(dp, rn)
+		} else if ml.IsDataSource(rn.DataSource.UID) {
+			node, err = s.buildMlNode(dp, rn, req)
+			if err != nil {
+				err = fmt.Errorf("fail to parse expression with refID %v: %w", rn.RefID, err)
+			}
 		} else {
 			node, err = s.buildDSNode(dp, rn, req)
 		}

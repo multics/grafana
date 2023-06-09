@@ -13,6 +13,8 @@ import (
 	"github.com/grafana/grafana/pkg/services/datasources"
 	"github.com/grafana/grafana/pkg/services/featuremgmt"
 	"github.com/grafana/grafana/pkg/services/pluginsintegration/plugincontext"
+	"github.com/grafana/grafana/pkg/services/pluginsintegration/pluginsettings"
+	"github.com/grafana/grafana/pkg/services/secrets"
 	"github.com/grafana/grafana/pkg/setting"
 )
 
@@ -46,19 +48,30 @@ type Service struct {
 	pCtxProvider *plugincontext.Provider
 	features     featuremgmt.FeatureToggles
 
+	plugins        plugins.Store
+	pluginSettings pluginsettings.Service
+	secretService  secrets.Service
+
 	tracer  tracing.Tracer
 	metrics *metrics
 }
 
 func ProvideService(cfg *setting.Cfg, pluginClient plugins.Client, pCtxProvider *plugincontext.Provider,
-	features featuremgmt.FeatureToggles, registerer prometheus.Registerer, tracer tracing.Tracer) *Service {
+	features featuremgmt.FeatureToggles, registerer prometheus.Registerer, tracer tracing.Tracer,
+	plugins plugins.Store,
+	pluginSettings pluginsettings.Service,
+	secretService secrets.Service,
+) *Service {
 	return &Service{
-		cfg:          cfg,
-		dataService:  pluginClient,
-		pCtxProvider: pCtxProvider,
-		features:     features,
-		tracer:       tracer,
-		metrics:      newMetrics(registerer),
+		cfg:            cfg,
+		dataService:    pluginClient,
+		pCtxProvider:   pCtxProvider,
+		features:       features,
+		tracer:         tracer,
+		metrics:        newMetrics(registerer),
+		plugins:        plugins,
+		pluginSettings: pluginSettings,
+		secretService:  secretService,
 	}
 }
 
