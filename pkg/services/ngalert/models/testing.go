@@ -8,7 +8,6 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 
-	"github.com/grafana/grafana/pkg/expr"
 	"github.com/grafana/grafana/pkg/services/folder"
 	"github.com/grafana/grafana/pkg/util"
 )
@@ -314,8 +313,8 @@ func CopyRule(r *AlertRule) *AlertRule {
 func CreateClassicConditionExpression(refID string, inputRefID string, reducer string, operation string, threshold int) AlertQuery {
 	return AlertQuery{
 		RefID:         refID,
-		QueryType:     expr.DatasourceType,
-		DatasourceUID: expr.DatasourceUID,
+		QueryType:     "__expr__",
+		DatasourceUID: "__expr__",
 		// the format corresponds to model `ClassicConditionJSON` in /pkg/expr/classic/classic.go
 		Model: json.RawMessage(fmt.Sprintf(`
 		{
@@ -349,7 +348,7 @@ func CreateClassicConditionExpression(refID string, inputRefID string, reducer s
                     }
                 }
             ]
-		}`, refID, inputRefID, operation, threshold, reducer, expr.DatasourceUID, expr.DatasourceType)),
+		}`, refID, inputRefID, operation, threshold, reducer, "__expr__", "__expr__")),
 	}
 }
 

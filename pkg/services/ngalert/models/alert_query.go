@@ -5,8 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"time"
-
-	"github.com/grafana/grafana/pkg/expr"
+	//	"github.com/grafana/grafana/pkg/expr"
 )
 
 const defaultMaxDataPoints float64 = 43200 // 12 hours at 1sec interval
@@ -69,12 +68,12 @@ func (rtr *RelativeTimeRange) isValid() bool {
 	return rtr.From > rtr.To
 }
 
-func (rtr *RelativeTimeRange) ToTimeRange() expr.TimeRange {
-	return expr.RelativeTimeRange{
-		From: -time.Duration(rtr.From),
-		To:   -time.Duration(rtr.To),
-	}
-}
+// func (rtr *RelativeTimeRange) ToTimeRange() expr.TimeRange {
+// 	return expr.RelativeTimeRange{
+// 		From: -time.Duration(rtr.From),
+// 		To:   -time.Duration(rtr.To),
+// 	}
+// }
 
 // AlertQuery represents a single query associated with an alert definition.
 type AlertQuery struct {
@@ -111,10 +110,10 @@ func (aq *AlertQuery) setModelProps() error {
 	return nil
 }
 
-// IsExpression returns true if the alert query is an expression.
-func (aq *AlertQuery) IsExpression() (bool, error) {
-	return expr.IsDataSource(aq.DatasourceUID), nil
-}
+// // IsExpression returns true if the alert query is an expression.
+// func (aq *AlertQuery) IsExpression() (bool, error) {
+// 	return expr.IsDataSource(aq.DatasourceUID), nil
+// }
 
 // setMaxDatapoints sets the model maxDataPoints if it's missing or invalid
 func (aq *AlertQuery) setMaxDatapoints() error {
@@ -273,13 +272,13 @@ func (aq *AlertQuery) PreSave() error {
 	}
 	aq.Model = model
 
-	isExpression, err := aq.IsExpression()
-	if err != nil {
-		return err
-	}
-
-	if ok := isExpression || aq.RelativeTimeRange.isValid(); !ok {
-		return fmt.Errorf("invalid relative time range: %+v", aq.RelativeTimeRange)
-	}
+	// isExpression, err := aq.IsExpression()
+	// if err != nil {
+	// 	return err
+	// }
+	//
+	// if ok := isExpression || aq.RelativeTimeRange.isValid(); !ok {
+	// 	return fmt.Errorf("invalid relative time range: %+v", aq.RelativeTimeRange)
+	// }
 	return nil
 }

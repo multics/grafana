@@ -281,7 +281,10 @@ func getExprRequest(ctx EvaluationContext, data []models.AlertQuery, dsCacheServ
 		}
 
 		req.Queries = append(req.Queries, expr.Query{
-			TimeRange:     q.RelativeTimeRange.ToTimeRange(),
+			TimeRange: expr.RelativeTimeRange{
+				From: -time.Duration(q.RelativeTimeRange.From),
+				To:   -time.Duration(q.RelativeTimeRange.To),
+			},
 			DataSource:    ds,
 			JSON:          model,
 			Interval:      interval,
