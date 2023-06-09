@@ -56,6 +56,7 @@ func (w *safeMacaronWrapper) CloseNotify() <-chan bool {
 // other nodes they must have already been executed and their results must
 // already by in vars.
 func (ml *MLNode) Execute(ctx context.Context, now time.Time, _ mathexp.Vars, s *Service) (r mathexp.Results, e error) {
+	logger := logger.FromContext(ctx).New("datasourceType", TypeMlNode.String(), "queryRefId", ml.refID)
 	var result mathexp.Results
 	timeRange := ml.TimeRange.AbsoluteTime(now)
 	plugin, exist := s.plugins.Plugin(ctx, mlPluginID)
@@ -100,6 +101,7 @@ func (ml *MLNode) Execute(ctx context.Context, now time.Time, _ mathexp.Vars, s 
 				Req:  req,
 				Resp: web.NewResponseWriter(req.Method, &safeMacaronWrapper{resp}),
 			},
+			Logger:       logger,
 			SignedInUser: ml.request.User,
 		}
 		proxy, err := pluginproxy.NewPluginProxy(dto, plugin.Routes, reqctx, path, s.cfg, s.secretService, s.tracer, pluginProxyTransport)
